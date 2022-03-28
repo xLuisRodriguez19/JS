@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        canvas {
+            background: rgb(0, 0, 0);
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="myCanvas" width="1366" height="623"></canvas>
+</body>
+<script>
+    var canvas = document.getElementById("myCanvas");
+    var ctx = canvas.getContext("2d");
+    var ballRadius = 20;
+    var x = canvas.width / 2;
+    var y = (canvas.height / 2) - ballRadius;
+    var dx = 2;
+    var dy = -2;
+    var paddleHeight = 75;
+    var paddleWidth = 10;
+
+    var paddleHeight2 = 75;
+    var paddleWidth2 = 10;
+    //var paddleY = (canvas.height - paddleHeight) / 2;
+    //var paddleY2 = (canvas.height - paddleHeight2) / 2;
+    var paddleY2 = (canvas.height - paddleHeight2) / 2;
+    var paddleY = (canvas.height - paddleHeight) / 2;
+    var arrPressed = false;
+    var abaPressed = false;
+
+    var wPressed = false;
+    var sPressed = false;
+
+    var score = 0;
+    var score2 = 0;
+
+    document.addEventListener("keydown", keyDownHandler, false);
+    document.addEventListener("keyup", keyUpHandler, false);
+
+    function drawBall() {
+        ctx.beginPath();
+        ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
+        ctx.fillStyle = "#0095DD";
+        ctx.fill();
+        ctx.closePath();
+    }
+
+    function keyDownHandler(e) {
+        if (e.keyCode == 38) {
+            abaPressed = true;
+        } else if (e.keyCode == 40) {
+            arrPressed = true;
+        } else if (e.keyCode == 83) {
+            wPressed = true;
+        }
+        else if (e.keyCode == 87) {
+            sPressed = true;
+        }
+    }
+
+    function keyUpHandler(e) {
+        if (e.keyCode == 38) {
+            abaPressed = false;
+        } else if (e.keyCode == 40) {
+            arrPressed = false;
+        }else if (e.keyCode == 83) {
+            wPressed = false;
+        }
+        else if (e.keyCode == 87) {
+            sPressed = false;
+        }
+    }
+
+    function drawPaddle() {
+        ctx.beginPath();
+        ctx.rect(0, paddleY, paddleWidth, paddleHeight);
+        ctx.fillStyle = "#0095DD";
+        ctx.fill();
+        ctx.closePath();
+    }
+
+    function drawPaddle2() {
+        ctx.beginPath();
+        ctx.rect(canvas.width - paddleWidth2, paddleY2, paddleWidth2, paddleHeight2);
+        ctx.fillStyle = "#0095DD";
+        ctx.fill();
+        ctx.closePath();
+    }
+
+    function drawMiddle() {
+        ctx.beginPath();
+        ctx.rect((canvas.width / 2) - (paddleWidth / 2), 0, paddleWidth, canvas.height);
+        ctx.fillStyle = "#FFFFFF";
+        ctx.fill();
+        ctx.closePath();
+    }
+
+    function drawBall() {
+        ctx.beginPath();
+        ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
+        ctx.fillStyle = "#0095DD";
+        ctx.fill();
+        ctx.closePath();
+    }
+
+    function drawScore() {
+        ctx.font = "16px Arial";
+        ctx.fillStyle = "#0095DD";
+        ctx.fillText("Score: " + score, 8, 20);
+    }
+
+    function drawScore2() {
+        ctx.font = "16px Arial";
+        ctx.fillStyle = "#0095DD";
+        ctx.fillText("Score: " + score2, canvas.width - 90, 20);
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawBall();
+        drawMiddle();
+        drawPaddle();
+        drawPaddle2();
+        drawScore();
+        drawScore2();
+
+        if (x + dx < ballRadius) {
+            if(y > paddleY && y < paddleY + paddleHeight) {
+                dx = -dx;
+            }else{
+                score2++;
+                x = canvas.width / 2;
+                y = (canvas.height / 2) - ballRadius;
+            }
+        }else if(x+dx > canvas.width-ballRadius){
+            if(y > paddleY2 && y < paddleY2 + paddleHeight2) {
+                dx = -dx;
+            }else{
+                score++;
+                x = canvas.width / 2;
+                y = (canvas.height / 2) - ballRadius;
+            }
+        }
+
+        if (y + dy > canvas.height - ballRadius || y + dy < ballRadius) {
+            dy = -dy;
+        }
+
+        if (arrPressed && paddleY < canvas.height - paddleHeight) {
+            paddleY += 7;
+        } else if (abaPressed && paddleY > 0) {
+            paddleY -= 7;
+        }
+
+        if (wPressed && paddleY2 < canvas.height - paddleHeight2) {
+            paddleY2 += 7;
+        } else if (sPressed && paddleY2 > 0) {
+            paddleY2 -= 7;
+        }
+
+
+        if(score == 3 || score2 == 3){
+            alert("GAME OVER");
+        document.location.reload();
+        }
+        x += dx;
+        y += dy;
+    }
+    setInterval(draw, 10);
+</script>
+
+</html>
